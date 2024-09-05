@@ -1,0 +1,9 @@
+1. Problem Approach
+
+  - Break down the topology of the given compound.
+    - A tree structure was designed, with C1 as the root, having three children. Additionally, the structure was designed to have no common leaves, resulting in level-2 nodes each having only one child leaf.
+
+2. Code Development
+
+3. Results
+
