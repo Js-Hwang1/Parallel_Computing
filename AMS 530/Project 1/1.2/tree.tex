@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage[letter,landscape,margin=1in]{geometry}  % Landscape orientation
+
+\begin{document}
+    \begin{center} 
+        \begin{tikzpicture}
+            [
+            level 1/.style={sibling distance=60mm, level distance=20mm},
+            level 2/.style={sibling distance=30mm, level distance=20mm},
+            level 3/.style={sibling distance=20mm, level distance=20mm},
+            every node/.style={draw, circle}
+            ]
+            \node {C1}
+                child {
+                    node {C2}
+                    child {
+                        node {C11}
+                        child {node {C12}}
+                    }
+                    child {
+                        node {C7}
+                        child {node {C8}}
+                    }
+                }
+                child {
+                    node {C3}
+                    child {
+                        node {C13}
+                        child {node {C14}}
+                    }
+                    child {
+                        node {C9}
+                        child {node {C10}}
+                    }
+                }
+                child {
+                    node {C4}
+                    child {
+                        node {C15}
+                        child {node {C16}}
+                    }
+                    child {
+                        node {C5}
+                        child {node {C6}}
+                    }
+                };
+        \end{tikzpicture}
+    \end{center}
+
+\end{document}
