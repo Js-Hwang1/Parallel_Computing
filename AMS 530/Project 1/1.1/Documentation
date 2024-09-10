@@ -1,5 +1,16 @@
-1. Problem approach
+1. Problem Approach
 
-2. Code developement 
+   - Non-deterministic Printing: This problem involves simple I/O via MPI. By running the code, the processes will execute their tasks in a non-deterministic order.
+
+   - Deterministic Printing: To achieve deterministic printing, we need to introduce a method that ensures processes print according to their rank. This requires a controlled approach to synchronize the output order based on process ranks.
+
+2. Code Development
+
+   - `non_deterministic_order_mpi.cpp`: This code is heavily influenced by the book *Parallel Scientific Computing in C++ and MPI* (George Em Karniadakis and Robert M. Kirby II), specifically pages 80 to 90.
+
+   - `deterministic_order_mpi.cpp`: This version uses a for-loop bounded by the world size (number of processors) and an `if` statement inside the loop. The code block runs only if the iterator matches the world rank (the rank of the process). This approach introduces different time delays for each process, allowing them to print in a deterministic order.
 
 3. Results
+
+   - Both codes function as intended.
+
