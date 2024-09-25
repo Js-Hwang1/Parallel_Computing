@@ -1,3 +1,5 @@
+#Login using login1 and login2 node since it already has necessary compliers for the job!! (Xeonmax will not work!!!!!)
+
 # Change to the scratch directory (or a specific location) after logging into the HPC.
 cd /gpfs/scratch/$USER  
 
