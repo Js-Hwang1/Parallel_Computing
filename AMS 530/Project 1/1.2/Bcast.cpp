@@ -16,9 +16,6 @@ int main(int argc, char **argv) {
     int mynode;
     MPI_Comm_rank(MPI_COMM_WORLD, &mynode);
 
-    // Start timing
-    double start_time = MPI_Wtime();  
-
     // Make data
     const int N = pow(10, 6);
     vector<float> data(N, 0.0); // Initialize array
@@ -33,20 +30,26 @@ int main(int argc, char **argv) {
     // Make Graph 
     const int num_nodes = 16;
 
-    // Adjacency information for each process (node)
-    int index[num_nodes] = {3, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
-    int edges[21] = {
-        1, 2, 3,     // 0 to 1, 2, 3
-        6, 10,       // 1 to 6, 10
-        8, 12,       // 2 to 8, 12
-        4, 14,       // 3 to 4, 14
-        5,           // 4 to 5
-        7,           // 6 to 7
-        9,           // 8 to 9
-        11,          // 10 to 11
-        13,          // 12 to 13
-        15           // 14 to 15
+    int index[num_nodes] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48};
+
+    int edges[48] = {
+        1, 2, 3,    
+        0, 6, 10,     
+        0, 8, 12,       
+        0, 4, 14,       
+        3, 5, 9,           
+        4, 6, 11,
+        1, 5, 7,
+        6, 8, 13,        
+        2, 7, 9,           
+        4, 8, 15,
+        1, 11, 15,
+        5, 10, 12,
+        2, 11, 13,
+        7, 12, 14,
+        3, 13, 15,
+        9, 10, 14
     };
 
     MPI_Comm graph_comm;
@@ -58,6 +61,9 @@ int main(int argc, char **argv) {
     vector<int> neighbors(num_neighbors);
     MPI_Graph_neighbors(graph_comm, mynode, num_neighbors, neighbors.data());
 
+    // Start timing
+    double start_time = MPI_Wtime();  
+    
     // Start the broadcast using Bcast
     MPI_Bcast(data.data(), N, MPI_FLOAT, 0, graph_comm);
 
