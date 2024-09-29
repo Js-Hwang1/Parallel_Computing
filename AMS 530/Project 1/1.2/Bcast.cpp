@@ -64,6 +64,36 @@ int main(int argc, char **argv) {
 
     double end_time = MPI_Wtime();
 
+    double time_taken = roundf((end_time - start_time) * 1000000) / 1000000;
+
+    if (mynode != 0) {
+        
+        MPI_Request request;
+        MPI_Isend(&time_taken, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+        MPI_Wait(&request, MPI_STATUS_IGNORE);
+    }
+
+    double final_time=0.0;
+
+    if (mynode == 0) {
+
+        final_time = time_taken;
+
+        vector<double> received_times(15);
+        vector<MPI_Request> recv_requests0(15);
+        
+        for (int i = 0; i < 15; ++i) {
+            MPI_Irecv(&received_times[i], 1, MPI_DOUBLE, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &recv_requests0[i]);
+        }
+        MPI_Waitall(15, recv_requests0.data(), MPI_STATUSES_IGNORE);
+        // max time from the leaf node is the final time for the whole broadcast
+        for(int i = 0;i<15;++i){
+            if (received_times[i] > final_time){
+                final_time = received_times[i];
+            }
+        }
+
+    }
 
     MPI_Barrier(graph_comm); 
 
@@ -94,7 +124,7 @@ int main(int argc, char **argv) {
             }
         }
         if (all_successful) {
-            cout <<end_time - start_time<< endl;
+            cout <<final_time<< endl;
         }
     }
     MPI_Finalize();
