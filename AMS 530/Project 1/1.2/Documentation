@@ -1,9 +1,21 @@
-1. Problem Approach
+ 1. Problem Approach
 
-  - Break down the topology of the given compound.
-    - A tree structure was designed, with C1 as the root, having three children. Additionally, the structure was designed to have no common leaves, resulting in level-2 nodes each having only one child leaf.
+- Break down the topology of the given compound:
+    - A tree structure was designed, with C1 as the root, having three children. Additionally, the structure was optimized to have no common leaves, resulting in level-2 nodes each having only one child leaf.
+
+- Broadcast to minimize overhead**:
+    - While communication itself is considered overhead, it can be substantially reduced/optimized by using non-blocking send/recv operations.
+    - This overhead can be minimized by stacking multiple send/recv operations simultaneously, reducing idle time at each node and enabling a pipeline broadcast.
 
 2. Code Development
 
+- Used 2D vectors to record adjacency information for each node, and reduced that to an optimal tree topology.
+
+- Implemented `MPI_Isend()`, `MPI_Irecv()`, and `MPI_Wait()` appropriately to achieve a pipeline broadcast.
+
+- Added a code block that, upon successful broadcast verification, prints the maximum broadcast time.
+
 3. Results
+
+- `my_algo_final.cpp` was approximately 3.3 times slower compared to `MPI_BCast()`. Tests were conducted on an NVIDIA V100 with 16 processes.
 
