@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     int mynode;
     MPI_Comm_rank(MPI_COMM_WORLD, &mynode);
 
-    int a = 2; 
+    int a = 1; 
     const int N = pow(10, 6);  
     const int chunk_size = N / a;  
     vector<float> data(N, 0.0); 
@@ -52,7 +52,6 @@ int main(int argc, char **argv) {
             for (size_t i = 0; i < neighbors[mynode].size(); ++i) {
                 int dest = neighbors[mynode][i];
                 MPI_Isend(&data[chunk * chunk_size], chunk_size, MPI_FLOAT, dest, chunk, MPI_COMM_WORLD, &send_requests[chunk * neighbors[mynode].size() + i]);
-                cout << "Node " << mynode << " sending chunk " << chunk << " to node " << dest << endl;
             }
         }
         MPI_Waitall(a * neighbors[mynode].size(), send_requests.data(), MPI_STATUSES_IGNORE);
@@ -71,12 +70,12 @@ int main(int argc, char **argv) {
         }
         MPI_Waitall(a * neighbors[mynode].size(), send_requests.data(), MPI_STATUSES_IGNORE);
     }
-
     // Finish timeing and calculate broadcast time
     double end_time = MPI_Wtime();
 
     double time_taken = roundf((end_time - start_time) * 1000000) / 1000000;
-
+    
+    MPI_Barrier(MPI_COMM_WORLD);
     if (mynode == 5 || mynode == 7 || mynode == 9 || mynode == 11 || mynode == 13) {
         
         MPI_Request request;
@@ -85,6 +84,12 @@ int main(int argc, char **argv) {
     }
 
     double final_time=0.0;
+    vector<int> leaves(5);
+    leaves[0] = 5;
+    leaves[1] = 7;
+    leaves[2] = 9;
+    leaves[3] = 11;
+    leaves[4] = 13;
 
     if (mynode == 15) {
 
@@ -94,10 +99,10 @@ int main(int argc, char **argv) {
         vector<MPI_Request> recv_requests15(5);
         
         for (int i = 0; i < 5; ++i) {
-            MPI_Irecv(&received_times[i], 1, MPI_DOUBLE, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &recv_requests15[i]);
+            MPI_Irecv(&received_times[i], 1, MPI_DOUBLE, leaves[i], 0, MPI_COMM_WORLD, &recv_requests15[i]);
         }
         MPI_Waitall(5, recv_requests15.data(), MPI_STATUSES_IGNORE);
-        // max time from the leaf node is the final time for the whole broadcast
+
         for(int i = 0;i<5;++i){
             if (received_times[i] > final_time){
                 final_time = received_times[i];
