@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         data[i] = (roundf(mynode + static_cast<float>(i)*.01f) * 10000) / 10000;  
     }
 
-    vector<float> recv(totnodes*32);  
+    vector<float> recv(totnodes*N);  
     
     const int num_nodes = 32;
 
